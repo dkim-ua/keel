@@ -11,13 +11,16 @@ import { Technology } from "@/components/Technology";
 import { Value } from "@/components/Value";
 import { WhyUs } from "@/components/WhyUs";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { getCases } from "@/content/cases";
+import { getCases } from "@/lib/db/cases";
 import { getDictionary } from "@/content/dictionaries";
 import { getServices } from "@/content/services";
 import { isLocale } from "@/lib/i18n";
 import { buildMetadata, faqSchema, organizationSchema, websiteSchema } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ locale: string }> };
+
+/** Re-render at most every 5 minutes; admin edits refresh pages immediately via revalidatePath. */
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
@@ -41,7 +44,7 @@ export default async function HomePage({ params }: PageProps) {
       <Process t={t.process} estimateHref="#contact" />
       <TeamModel t={t.team} />
       <WhyUs t={t.why} />
-      <Cases locale={locale} t={t.cases} cases={getCases(locale)} />
+      <Cases locale={locale} t={t.cases} cases={await getCases(locale)} />
       <Technology
         eyebrow={t.tech.eyebrow}
         title={t.tech.title}

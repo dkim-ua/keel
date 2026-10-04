@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n";
+import { locales } from "@/lib/i18n";
 
 /**
  * Case studies.
@@ -11,7 +12,14 @@ import type { Locale } from "@/lib/i18n";
  * factual `outcome` approved by the client. Order in the array = order on the site.
  */
 
-export type CaseKind = "concept" | "client";
+/**
+ * concept — concept / internal project (always labelled as such, no metrics or results);
+ * product — the team's own product;
+ * client  — client project (only with a factual result approved by the client).
+ */
+export const caseKinds = ["concept", "product", "client"] as const;
+export type CaseKind = (typeof caseKinds)[number];
+export const casePreviews = ["board", "chart", "chat"] as const;
 
 export type CaseStudy = {
   slug: string;
@@ -26,9 +34,39 @@ export type CaseStudy = {
   solution: string;
   architecture: { name: string; text: string }[];
   scope: string[];
-  /** Abstract card illustration. */
-  preview: "board" | "chart" | "chat";
+  /** Abstract card illustration, used when there is no cover image. */
+  preview: (typeof casePreviews)[number];
+  /** Optional uploaded images (absolute URLs). */
+  cover?: string;
+  gallery?: string[];
+  /** Optional link to the live product. */
+  link?: string;
 };
+
+/** Language-dependent part of a case. */
+export type CaseText = Pick<CaseStudy, "name" | "type" | "summary" | "outcome" | "challenge" | "solution" | "architecture" | "scope">;
+
+/** A case as stored in the database / edited in the admin panel (both languages at once). */
+export type CaseRecord = Pick<CaseStudy, "slug" | "kind" | "preview" | "stack" | "cover" | "gallery" | "link"> & {
+  id: string;
+  published: boolean;
+  order: number;
+  updatedAt?: string;
+} & Record<Locale, CaseText>;
+
+export function recordToCase(record: CaseRecord, locale: Locale): CaseStudy {
+  const text = record[locale]?.name ? record[locale] : record.en;
+  return {
+    slug: record.slug,
+    kind: record.kind,
+    preview: record.preview,
+    stack: record.stack,
+    cover: record.cover,
+    gallery: record.gallery ?? [],
+    link: record.link,
+    ...text,
+  };
+}
 
 const stack = {
   fieldline: ["Next.js", "Flutter", "Node.js", "PostgreSQL", "Docker"],
@@ -212,12 +250,32 @@ const casesUk: CaseStudy[] = [
 
 const byLocale: Record<Locale, CaseStudy[]> = { en: casesEn, uk: casesUk };
 
-export function getCases(locale: Locale): CaseStudy[] {
-  return byLocale[locale];
+/** Built-in concept cases — shown until real cases are added in the admin panel. */
+export function staticCaseRecords(): CaseRecord[] {
+  return casesEn.map((en, index) => {
+    const pick = (c: CaseStudy): CaseText => ({
+      name: c.name,
+      type: c.type,
+      summary: c.summary,
+      outcome: c.outcome,
+      challenge: c.challenge,
+      solution: c.solution,
+      architecture: c.architecture,
+      scope: c.scope,
+    });
+    const record = {
+      id: en.slug,
+      slug: en.slug,
+      kind: en.kind,
+      preview: en.preview,
+      stack: en.stack,
+      gallery: [],
+      published: true,
+      order: index,
+    } as Omit<CaseRecord, Locale>;
+    const texts = Object.fromEntries(
+      locales.map((l) => [l, pick(byLocale[l].find((c) => c.slug === en.slug) ?? en)]),
+    ) as Record<Locale, CaseText>;
+    return { ...record, ...texts };
+  });
 }
-
-export function getCase(locale: Locale, slug: string): CaseStudy | undefined {
-  return byLocale[locale].find((c) => c.slug === slug);
-}
-
-export const caseSlugs = casesEn.map((c) => c.slug);

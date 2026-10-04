@@ -4,7 +4,7 @@ import { CTA } from "@/components/CTA";
 import { PageHeader } from "@/components/PageHeader";
 import { CheckIcon } from "@/components/ui/Icons";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { caseSlugs, getCase } from "@/content/cases";
+import { getCase, getCaseSlugs } from "@/lib/db/cases";
 import { getDictionary } from "@/content/dictionaries";
 import { isLocale, localePath } from "@/lib/i18n";
 import { breadcrumbSchema, buildMetadata } from "@/lib/seo";
@@ -12,16 +12,18 @@ import { revealDelay } from "@/lib/ui";
 
 type PageProps = { params: Promise<{ locale: string; slug: string }> };
 
-export const dynamicParams = false;
+// New cases added in the admin panel are rendered on first request.
+export const dynamicParams = true;
+export const revalidate = 300;
 
-export function generateStaticParams() {
-  return caseSlugs.map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  return (await getCaseSlugs()).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
-  const item = getCase(locale, slug);
+  const item = await getCase(locale, slug);
   if (!item) return {};
   const t = getDictionary(locale);
   const label = item.kind === "concept" ? ` (${t.cases.conceptBadge})` : "";
@@ -31,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function CasePage({ params }: PageProps) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
-  const item = getCase(locale, slug);
+  const item = await getCase(locale, slug);
   if (!item) notFound();
 
   const t = getDictionary(locale);
@@ -58,6 +60,16 @@ export default async function CasePage({ params }: PageProps) {
         title={item.name}
         intro={item.summary}
       >
+        {item.link && (
+          <a
+            href={item.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-line-strong px-4 py-2 text-sm text-fg transition-colors hover:border-muted/60"
+          >
+            {c.visit} <span aria-hidden="true">↗</span>
+          </a>
+        )}
         {concept && (
           <div className="max-w-2xl rounded-xl border border-line-strong bg-surface/70 px-5 py-4">
             <p className="font-mono text-[0.7rem] uppercase tracking-[0.14em] text-accent">{c.disclaimerTitle}</p>
@@ -65,6 +77,19 @@ export default async function CasePage({ params }: PageProps) {
           </div>
         )}
       </PageHeader>
+
+      {(item.cover || (item.gallery?.length ?? 0) > 0) && (
+        <section aria-label={c.gallery} className="pb-4">
+          <div className="container-x space-y-4">
+            {[item.cover, ...(item.gallery ?? [])].filter(Boolean).map((src, i) => (
+              <figure key={`${src}-${i}`} className="overflow-hidden rounded-2xl border border-line bg-surface" data-reveal>
+                {/* eslint-disable-next-line @next/next/no-img-element -- uploaded images are already resized to WebP */}
+                <img src={src} alt={`${item.name} — ${i + 1}`} loading={i === 0 ? "eager" : "lazy"} decoding="async" className="w-full" />
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section aria-label={item.name} className="border-t border-line py-20 sm:py-24">
         <div className="container-x grid gap-14 lg:grid-cols-[1.2fr_0.8fr] lg:gap-20">

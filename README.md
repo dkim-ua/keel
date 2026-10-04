@@ -99,14 +99,31 @@ To add another channel (e.g. a native CRM API), add a `Channel` object in `src/l
 
 ---
 
+## Admin panel — `/admin`
+
+Password-protected panel (one shared password, `ADMIN_PASSWORD`) with:
+
+- **Overview** — page views, unique visitors, leads and conversion for 7/30/90 days; top pages, sources, countries, devices, site language. Cookieless analytics: no cookie banner needed, no personal data stored.
+- **Leads** — every form submission, with status (new / in progress / closed / spam), private notes, mail / phone / WhatsApp links.
+- **Cases** — add, edit, hide, reorder and delete case studies in EN and UA, upload cover and screenshots. Changes go live immediately.
+
+### Setup on Vercel (once)
+
+1. **Storage → Create Database → Upstash for Redis** (free plan) → connect to the project. Adds `KV_REST_API_URL`, `KV_REST_API_TOKEN`.
+2. **Storage → Create → Blob**, access **Public** → connect. Adds `BLOB_READ_WRITE_TOKEN`.
+3. **Settings → Environment Variables** → add `ADMIN_PASSWORD`.
+4. **Redeploy.** Open `https://<your-site>/admin`.
+
+Without a database the site keeps working: built-in concept cases are shown and leads still go to Telegram.
+
 ## Company data — nothing is invented
 
 The site contains no fictional clients, testimonials, team size, years, offices or metrics.
 
 - **Email and social links** appear only when set: `NEXT_PUBLIC_CONTACT_EMAIL`, `NEXT_PUBLIC_LINKEDIN_URL`, `NEXT_PUBLIC_GITHUB_URL`. Until then the footer shows no contact placeholders.
-- **Case studies** are three concept projects, explicitly labelled **"Concept / Internal Project"**, with a "Concept focus" instead of results.
+- **Case studies** are managed in `/admin/cases`. Kinds: *Concept / Internal Project* (labelled as such), *Own product*, *Client project* (only with real results approved by the client). Until the first case is added, three built-in concepts are shown.
 
-### Adding a real client case
+### Built-in concepts (code)
 
 In `src/content/cases.ts`, add an entry to both `casesEn` and `casesUk`:
 

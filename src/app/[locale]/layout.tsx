@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
+import { PageviewTracker } from "@/components/PageviewTracker";
 import { RevealObserver } from "@/components/RevealObserver";
 import { getDictionary } from "@/content/dictionaries";
 import { getServices } from "@/content/services";
@@ -58,16 +59,18 @@ export default async function LocaleLayout({ children, params }: LayoutProps) {
   const services = getServices(locale);
 
   return (
-    <html lang={htmlLang[locale]} className={`${onest.variable} ${mono.variable}`} suppressHydrationWarning>
-      <head>
-        {/* Enables scroll-reveal styles only when JavaScript runs; content stays visible otherwise. */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
-      </head>
+    <html
+      lang={htmlLang[locale]}
+      className={`${onest.variable} ${mono.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body className="min-h-dvh overflow-x-clip">
         <Navbar locale={locale} t={t.nav} />
         <main id="main">{children}</main>
         <Footer locale={locale} t={t.footer} nav={t.nav} services={services} />
         <RevealObserver />
+        <PageviewTracker />
       </body>
     </html>
   );

@@ -49,7 +49,11 @@ export async function POST(request: NextRequest) {
     return respond({ isJson, locale, ok: false, error: "validation", status: 422, request, fields: result.errors });
   }
 
-  const meta = { id: `KL-${randomUUID().slice(0, 8).toUpperCase()}`, submittedAt: new Date().toISOString() };
+  const meta = {
+    id: `KL-${randomUUID().slice(0, 8).toUpperCase()}`,
+    submittedAt: new Date().toISOString(),
+    country: request.headers.get("x-vercel-ip-country") ?? undefined,
+  };
   const delivery = await deliverLead(result.lead, meta);
 
   if (delivery.status === "not-configured") {

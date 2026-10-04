@@ -2,6 +2,8 @@
 import { createHmac } from "node:crypto";
 import type { Lead } from "./validate";
 import { optionLabelsEn } from "./options";
+import { saveLead } from "../db/leads";
+import { storageEnabled } from "../db/redis";
 
 /**
  * Lead delivery channels. Each channel is enabled by environment variables.
@@ -15,7 +17,7 @@ type Channel = {
   send: (lead: Lead, meta: LeadMeta) => Promise<void>;
 };
 
-export type LeadMeta = { id: string; submittedAt: string };
+export type LeadMeta = { id: string; submittedAt: string; country?: string };
 
 const env = (key: string) => process.env[key]?.trim() || undefined;
 
@@ -42,7 +44,7 @@ function plainText(lead: Lead, meta: LeadMeta): string {
     `Name: ${lead.name}`,
     `Company: ${lead.company || "—"}`,
     `Email: ${lead.email}`,
-    `Telegram / Phone: ${lead.contact || "—"}`,
+    `Phone: ${lead.phone || "—"}`,
     `Need: ${r.projectType}`,
     `Stage: ${r.stage}`,
     `Budget: ${r.budget}`,
@@ -86,7 +88,7 @@ const telegram: Channel = {
       `<b>Name:</b> ${e(lead.name)}`,
       `<b>Company:</b> ${e(lead.company || "—")}`,
       `<b>Email:</b> ${e(lead.email)}`,
-      `<b>Telegram / Phone:</b> ${e(lead.contact || "—")}`,
+      `<b>Phone:</b> ${e(lead.phone || "—")}`,
       `<b>Need:</b> ${r.projectType}`,
       `<b>Stage:</b> ${r.stage}`,
       `<b>Budget:</b> ${r.budget}`,
@@ -94,7 +96,10 @@ const telegram: Channel = {
       `<b>Description:</b>`,
       e(description),
       "",
-      `<i>${lead.locale.toUpperCase()} · ${e(lead.sourcePage || "—")}</i>`,
+      `<i>${lead.locale.toUpperCase()}${meta.country ? ` · ${e(meta.country)}` : ""} · ${e(lead.sourcePage || "—")}</i>`,
+      ...(storageEnabled() && process.env.NEXT_PUBLIC_SITE_URL
+        ? [`<a href="${e(process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, ""))}/admin/leads">Open in admin</a>`]
+        : []),
     ].join("\n");
 
     // TELEGRAM_CHAT_ID may hold several recipients separated by commas:
@@ -166,7 +171,14 @@ const webhook: Channel = {
   },
 };
 
-const channels: Channel[] = [telegram, email, webhook];
+/** Saves every lead to the database so it appears in the admin panel. */
+const storage: Channel = {
+  name: "storage",
+  enabled: storageEnabled,
+  send: (lead, meta) => saveLead(lead, meta),
+};
+
+const channels: Channel[] = [storage, telegram, email, webhook];
 
 export type DeliveryResult =
   | { status: "delivered"; channels: string[] }

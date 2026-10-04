@@ -5,9 +5,10 @@ import type { Dictionary } from "@/content/dictionaries";
 import { budgets, projectStages, projectTypes, type ProjectType } from "@/lib/contact/options";
 import type { Locale } from "@/lib/i18n";
 import { Arrow, buttonClasses } from "./ui/Button";
+import { PhoneInput } from "./PhoneInput";
 import { CheckIcon } from "./ui/Icons";
 
-type FieldName = "name" | "company" | "email" | "contact" | "projectType" | "stage" | "budget" | "description";
+type FieldName = "name" | "company" | "email" | "phone" | "projectType" | "stage" | "budget" | "description";
 type ErrorCode = "required" | "invalid" | "tooLong";
 type Status = "idle" | "submitting" | "success" | "error";
 type ApiErrorCode = keyof Dictionary["form"]["errors"];
@@ -46,6 +47,9 @@ export function ContactForm({ locale, t, defaultProjectType, idPrefix = "cf" }: 
     const next: Partial<Record<FieldName, ErrorCode>> = {};
     for (const field of REQUIRED) if (!data[field]?.trim()) next[field] = "required";
     if (data.email && !EMAIL_RE.test(data.email.trim())) next.email = "invalid";
+    const phoneDigits = (data.phoneNumber ?? "").replace(/\D/g, "");
+    if (data.phoneNumber?.trim() && (phoneDigits.length < 5 || phoneDigits.length > 15 || /[^\d\s()+.-]/.test(data.phoneNumber)))
+      next.phone = "invalid";
     return next;
   }
 
@@ -99,10 +103,10 @@ export function ContactForm({ locale, t, defaultProjectType, idPrefix = "cf" }: 
   }
 
   function focusFirstError(errs: Partial<Record<FieldName, ErrorCode>>) {
-    const order: FieldName[] = ["name", "company", "email", "contact", "projectType", "stage", "budget", "description"];
+    const order: FieldName[] = ["name", "company", "email", "phone", "projectType", "stage", "budget", "description"];
     const first = order.find((f) => errs[f]);
     if (!first) return;
-    const el = formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`);
+    const el = formRef.current?.querySelector<HTMLElement>(`[name="${first === "phone" ? "phoneNumber" : first}"]`);
     el?.focus();
   }
 
@@ -199,16 +203,15 @@ export function ContactForm({ locale, t, defaultProjectType, idPrefix = "cf" }: 
             className={inputClass("email")}
           />
         </Field>
-        <Field id={id("contact")} label={t.contact} optional={t.optional} error={errorText("contact")}>
-          <input
-            id={id("contact")}
-            name="contact"
-            type="text"
-            autoComplete="tel"
-            maxLength={120}
-            placeholder={t.placeholders.contact}
-            aria-invalid={!!errors.contact}
-            className={inputClass("contact")}
+        <Field id={id("phone")} label={t.phone} optional={t.optional} error={errorText("phone")}>
+          <PhoneInput
+            id={id("phone")}
+            locale={locale}
+            countryLabel={t.phoneCountry}
+            placeholder={t.placeholders.phone}
+            invalid={!!errors.phone}
+            describedBy={errors.phone ? `${id("phone")}-error` : undefined}
+            inputClassName={inputClass("phone")}
           />
         </Field>
       </div>

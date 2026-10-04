@@ -158,19 +158,19 @@
 }
 
 /* ───────────────────────── Reveal on scroll ─────────────────────────
-   Content is visible by default. Only when JS is available (html.js) are
-   elements hidden until they enter the viewport. */
-.js [data-reveal] {
-  opacity: 0;
-  transform: translate3d(0, 18px, 0);
+   Content is visible by default. Elements are hidden until they enter the
+   viewport only when the browser runs scripts (no inline script needed). */
+@media (scripting: enabled) {
+  [data-reveal]:not([data-visible="true"]) {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+}
+[data-reveal] {
   transition:
     opacity 0.8s var(--ease-out-soft),
     transform 0.8s var(--ease-out-soft);
   transition-delay: var(--reveal-delay, 0ms);
-}
-.js [data-reveal][data-visible="true"] {
-  opacity: 1;
-  transform: none;
 }
 
 /* FAQ disclosure */
@@ -192,8 +192,8 @@ details > summary::-webkit-details-marker {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .js [data-reveal] {
-    opacity: 1;
-    transform: none;
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

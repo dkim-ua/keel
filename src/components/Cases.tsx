@@ -36,15 +36,28 @@ export function CaseCard({ locale, t, item }: { locale: Locale; t: Dictionary["c
   const concept = item.kind === "concept";
   return (
     <article className="card group flex h-full flex-col overflow-hidden">
-      <CasePreview variant={item.preview} />
+      {item.cover ? (
+        <div className="relative h-40 overflow-hidden border-b border-line bg-bg">
+          {/* eslint-disable-next-line @next/next/no-img-element -- uploaded images are already resized to WebP */}
+          <img
+            src={item.cover}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="size-full object-cover object-top opacity-90 transition-transform duration-700 ease-out-soft group-hover:scale-[1.03]"
+          />
+        </div>
+      ) : (
+        <CasePreview variant={item.preview} />
+      )}
       <div className="flex flex-1 flex-col p-7">
         <div className="flex flex-wrap items-center gap-2">
           <span
             className={`rounded-full border px-2.5 py-1 font-mono text-[0.66rem] uppercase tracking-wider ${
-              concept ? "border-line-strong text-muted" : "border-signal/40 text-signal"
+              concept ? "border-line-strong text-muted" : item.kind === "product" ? "border-accent/40 text-accent" : "border-signal/40 text-signal"
             }`}
           >
-            {concept ? t.conceptBadge : t.clientBadge}
+            {concept ? t.conceptBadge : item.kind === "product" ? t.productBadge : t.clientBadge}
           </span>
         </div>
 

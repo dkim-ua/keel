@@ -1,10 +1,13 @@
 import type { MetadataRoute } from "next";
-import { caseSlugs } from "@/content/cases";
+import { getCaseSlugs } from "@/lib/db/cases";
 import { serviceSlugs } from "@/content/services";
 import { htmlLang, localePath, locales } from "@/lib/i18n";
 import { absoluteUrl } from "@/lib/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const caseSlugs = await getCaseSlugs();
   const paths: { path: string; priority: number; changeFrequency: "weekly" | "monthly" }[] = [
     { path: "/", priority: 1, changeFrequency: "weekly" },
     { path: "/about", priority: 0.7, changeFrequency: "monthly" },

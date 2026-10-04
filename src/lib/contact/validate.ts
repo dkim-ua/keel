@@ -1,11 +1,12 @@
 import { isLocale, type Locale } from "../i18n";
+import { findCountry, formatPhone } from "./countries";
 import { budgets, projectStages, projectTypes, type Budget, type ProjectStage, type ProjectType } from "./options";
 
 export type Lead = {
   name: string;
   company: string;
   email: string;
-  contact: string;
+  phone: string;
   projectType: ProjectType;
   stage: ProjectStage;
   budget: Budget;
@@ -23,12 +24,14 @@ const LIMITS = {
   name: 120,
   company: 160,
   email: 200,
-  contact: 120,
+  phone: 32,
   description: 5000,
   sourcePage: 300,
 } as const;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+/** "+<country code> <national number>", digits with optional spaces, dashes, dots and parentheses. */
+const PHONE_RE = /^\+\d{1,4} [\d\s().-]{3,24}$/;
 
 function str(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -45,7 +48,9 @@ export function validateLead(input: Record<string, unknown>): ValidationResult {
   const name = str(input.name);
   const company = str(input.company);
   const email = str(input.email);
-  const contact = str(input.contact);
+  // Phone arrives either as a ready string (JSON clients) or as country + number (HTML form).
+  const country = findCountry(str(input.phoneCountry));
+  const phone = country ? formatPhone(country.dial, str(input.phoneNumber)) : str(input.phone);
   const projectType = str(input.projectType);
   const stage = str(input.stage);
   const budget = str(input.budget);
@@ -61,7 +66,11 @@ export function validateLead(input: Record<string, unknown>): ValidationResult {
   if (!email) errors.email = "required";
   else if (email.length > LIMITS.email || !EMAIL_RE.test(email)) errors.email = "invalid";
 
-  if (contact.length > LIMITS.contact) errors.contact = "tooLong";
+  if (phone) {
+    const digits = phone.replace(/\D/g, "");
+    if (phone.length > LIMITS.phone) errors.phone = "tooLong";
+    else if (!PHONE_RE.test(phone) || digits.length < 7 || digits.length > 15) errors.phone = "invalid";
+  }
 
   if (!projectType) errors.projectType = "required";
   else if (!oneOf(projectTypes, projectType)) errors.projectType = "invalid";
@@ -83,7 +92,7 @@ export function validateLead(input: Record<string, unknown>): ValidationResult {
       name,
       company,
       email,
-      contact,
+      phone,
       projectType: projectType as ProjectType,
       stage: stage as ProjectStage,
       budget: budget as Budget,
