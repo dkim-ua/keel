@@ -6,8 +6,8 @@ import { del, put } from "@vercel/blob";
  * Vercel then adds BLOB_READ_WRITE_TOKEN automatically.
  */
 
-export function blobEnabled(): boolean {
-  return !!(process.env.BLOB_READ_WRITE_TOKEN || (process.env.VERCEL_OIDC_TOKEN && process.env.BLOB_STORE_ID));
+ export function blobEnabled(): boolean {
+  return !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 
 export async function uploadImage(file: File, folder = "cases"): Promise<string> {
