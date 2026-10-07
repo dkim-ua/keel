@@ -28,6 +28,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: await uploadImage(file) });
   } catch (error) {
     console.error("[upload]", error);
-    return NextResponse.json({ error: "Не удалось загрузить файл." }, { status: 502 });
-  }
+    const detail = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: `Не удалось загрузить файл: ${detail}` }, { status: 502 });  }
 }
