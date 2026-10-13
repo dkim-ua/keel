@@ -25,7 +25,6 @@ const mono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
-export const dynamicParams = false;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
