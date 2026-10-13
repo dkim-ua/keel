@@ -24,7 +24,7 @@ export function Services({ locale, t, services }: ServicesProps) {
               >
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-500 group-hover:opacity-100 [background:radial-gradient(28rem_circle_at_0%_0%,rgba(143,180,255,0.08),transparent_60%)]"
+                  className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-500 group-hover:opacity-100 [background:radial-gradient(28rem_circle_at_0%_0%,var(--color-glow),transparent_60%)]"
                 />
                 <span className="flex items-center justify-between">
                   <span className="flex size-11 items-center justify-center rounded-xl border border-line bg-bg text-accent">

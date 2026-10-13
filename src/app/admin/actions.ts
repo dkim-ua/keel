@@ -107,6 +107,15 @@ export async function togglePublishedAction(id: string) {
   revalidatePath("/admin/cases");
 }
 
+export async function toggleFeaturedAction(id: string) {
+  await requireAdmin();
+  const record = await getCaseRecord(id);
+  if (!record) return;
+  await saveCaseRecord({ ...record, featured: !record.featured });
+  refreshSite();
+  revalidatePath("/admin/cases");
+}
+
 export async function moveCaseAction(id: string, direction: "up" | "down") {
   await requireAdmin();
   const records = await listCaseRecords();

@@ -6,7 +6,12 @@ import { del, put } from "@vercel/blob";
  * Vercel then adds BLOB_READ_WRITE_TOKEN automatically.
  */
 
- export function blobEnabled(): boolean {
+/**
+ * Older Blob stores give a BLOB_READ_WRITE_TOKEN. Newer ones give only BLOB_STORE_ID
+ * and authenticate through Vercel's OIDC token, which exists only inside the
+ * running function (not as an env var at check time) — so the store id is enough.
+ */
+export function blobEnabled(): boolean {
   return !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 }
 

@@ -70,6 +70,16 @@ export async function getCases(locale: Locale): Promise<CaseStudy[]> {
   return (await publicRecords()).map((r) => recordToCase(r, locale));
 }
 
+/**
+ * Cases for the home page: the ones marked "На главной" in the admin panel,
+ * in admin order. Nothing marked yet → the first three public cases.
+ */
+export async function getFeaturedCases(locale: Locale): Promise<CaseStudy[]> {
+  const records = await publicRecords();
+  const featured = records.filter((r) => r.featured);
+  return (featured.length ? featured : records.slice(0, 3)).map((r) => recordToCase(r, locale));
+}
+
 export async function getCase(locale: Locale, slug: string): Promise<CaseStudy | undefined> {
   const record = (await publicRecords()).find((r) => r.slug === slug);
   return record ? recordToCase(record, locale) : undefined;

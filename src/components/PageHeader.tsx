@@ -21,7 +21,7 @@ export function PageHeader({ eyebrow, title, intro, breadcrumbs, children }: Pag
       />
       <div
         aria-hidden="true"
-        className="absolute left-[10%] top-[-16rem] -z-10 h-[30rem] w-[50rem] rounded-full bg-[radial-gradient(closest-side,rgba(92,132,220,0.18),transparent)]"
+        className="absolute left-[10%] top-[-16rem] -z-10 h-[30rem] w-[50rem] rounded-full bg-[radial-gradient(closest-side,var(--color-glow),transparent)]"
       />
       <div className="container-x">
         {breadcrumbs && (

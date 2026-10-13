@@ -5,7 +5,7 @@
  * the site never shows placeholder contact data.
  */
 
- function clean(value: string | undefined): string | undefined {
+function clean(value: string | undefined): string | undefined {
   const v = value?.trim();
   return v ? v : undefined;
 }

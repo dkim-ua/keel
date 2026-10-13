@@ -4,6 +4,7 @@ import type { Lead } from "./validate";
 import { optionLabelsEn } from "./options";
 import { saveLead } from "../db/leads";
 import { storageEnabled } from "../db/redis";
+import { siteConfig } from "../site";
 
 /**
  * Lead delivery channels. Each channel is enabled by environment variables.
@@ -97,9 +98,7 @@ const telegram: Channel = {
       e(description),
       "",
       `<i>${lead.locale.toUpperCase()}${meta.country ? ` · ${e(meta.country)}` : ""} · ${e(lead.sourcePage || "—")}</i>`,
-      ...(storageEnabled() && process.env.NEXT_PUBLIC_SITE_URL
-        ? [`<a href="${e(process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, ""))}/admin/leads">Open in admin</a>`]
-        : []),
+      ...(storageEnabled() && process.env.NEXT_PUBLIC_SITE_URL ? [`<a href="${e(siteConfig.url)}/admin/leads">Open in admin</a>`] : []),
     ].join("\n");
 
     // TELEGRAM_CHAT_ID may hold several recipients separated by commas:

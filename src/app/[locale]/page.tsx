@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Cases } from "@/components/Cases";
 import { CTA } from "@/components/CTA";
 import { FAQ } from "@/components/FAQ";
-import { Hero } from "@/components/Hero";
-import { Process } from "@/components/Process";
-import { Services } from "@/components/Services";
-import { TeamModel } from "@/components/TeamModel";
-import { Technology } from "@/components/Technology";
-import { Value } from "@/components/Value";
-import { WhyUs } from "@/components/WhyUs";
+import { HomeHero } from "@/components/home/HomeHero";
+import { FeaturedWork, HomeProcess, ServiceGrid, TechMarquee, WhyKeel } from "@/components/home/HomeSections";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { getCases } from "@/lib/db/cases";
+import { getFeaturedCases } from "@/lib/db/cases";
 import { getDictionary } from "@/content/dictionaries";
 import { getServices } from "@/content/services";
 import { isLocale } from "@/lib/i18n";
@@ -34,26 +28,21 @@ export default async function HomePage({ params }: PageProps) {
   if (!isLocale(locale)) notFound();
 
   const t = getDictionary(locale);
+  const featured = await getFeaturedCases(locale);
+  // Short FAQ on the home page: cost, timing, international work, NDA, support.
+  const faq = [0, 1, 7, 6, 5].map((i) => t.faq.items[i]).filter(Boolean);
+  const tech = t.tech.categories.flatMap((c) => c.items).filter((item) => !/integrations|API/i.test(item));
 
   return (
     <>
-      <JsonLd data={[organizationSchema(t.meta.home.description), websiteSchema(locale), faqSchema(t.faq.items)]} />
-      <Hero locale={locale} t={t.hero} />
-      <Value t={t.value} />
-      <Services locale={locale} t={t.services} services={getServices(locale)} />
-      <Process t={t.process} estimateHref="#contact" />
-      <TeamModel t={t.team} />
-      <WhyUs t={t.why} />
-      <Cases locale={locale} t={t.cases} cases={await getCases(locale)} />
-      <Technology
-        eyebrow={t.tech.eyebrow}
-        title={t.tech.title}
-        subtitle={t.tech.subtitle}
-        note={t.tech.note}
-        noteText={t.tech.noteText}
-        categories={t.tech.categories}
-      />
-      <FAQ eyebrow={t.faq.eyebrow} title={t.faq.title} items={t.faq.items} />
+      <JsonLd data={[organizationSchema(t.meta.home.description), websiteSchema(locale), faqSchema(faq)]} />
+      <HomeHero hero={t.hero} home={t.home} featured={featured} />
+      <TechMarquee label={t.home.marqueeLabel} items={tech} />
+      <FeaturedWork locale={locale} t={t.home.work} badges={t.cases} cases={featured} />
+      <ServiceGrid locale={locale} t={t.home.services} services={getServices(locale)} />
+      <HomeProcess t={t.home.process} />
+      <WhyKeel t={t.home.why} />
+      <FAQ eyebrow={t.faq.eyebrow} title={t.faq.title} items={faq} />
       <CTA locale={locale} t={t.cta} form={t.form} />
     </>
   );

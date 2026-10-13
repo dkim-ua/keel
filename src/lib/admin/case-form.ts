@@ -96,6 +96,7 @@ export function parseCaseForm(form: FormData, ctx: { existing: CaseRecord[]; nex
     kind,
     preview,
     published: form.get("published") === "on",
+    featured: form.get("featured") === "on",
     order: current?.order ?? ctx.nextOrder,
     stack: text(form, "stack", 600)
       .split(",")

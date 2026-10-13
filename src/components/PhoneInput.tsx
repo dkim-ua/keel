@@ -44,7 +44,7 @@ export function PhoneInput({ id, locale, countryLabel, placeholder, invalid, des
         <span
           aria-hidden="true"
           className={`pointer-events-none flex h-full items-center gap-1.5 rounded-xl border bg-bg/70 py-3 pl-3 pr-7 text-fg ${
-            invalid ? "border-red-400/60" : "border-line"
+            invalid ? "border-danger/60" : "border-line"
           }`}
         >
           <span className="text-base leading-none">{flagEmoji(selected.iso)}</span>

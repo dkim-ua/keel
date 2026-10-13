@@ -40,6 +40,7 @@ function toValues(record: CaseRecord | null): CaseEditorValues {
     kind: record?.kind ?? "product",
     preview: record?.preview ?? "board",
     published: record?.published ?? true,
+    featured: record?.featured ?? false,
     link: record?.link ?? "",
     stack: (record?.stack ?? []).join(", "),
     cover: record?.cover ?? "",

@@ -140,7 +140,7 @@ export function ContactForm({ locale, t, defaultProjectType, idPrefix = "cf" }: 
   const errorText = (field: FieldName) => (errors[field] ? t.errors[errors[field]!] : undefined);
   const inputClass = (field: FieldName) =>
     `block w-full rounded-xl border bg-bg/70 px-4 py-3 text-fg placeholder:text-subtle/80 transition-colors focus:border-accent/70 focus:outline-none focus:ring-2 focus:ring-accent/20 ${
-      errors[field] ? "border-red-400/60" : "border-line hover:border-line-strong"
+      errors[field] ? "border-danger/60" : "border-line hover:border-line-strong"
     }`;
 
   return (
@@ -274,7 +274,7 @@ export function ContactForm({ locale, t, defaultProjectType, idPrefix = "cf" }: 
 
       <div id={id("status")} role="alert" aria-live="assertive" className={apiError ? "mt-5" : "sr-only"}>
         {apiError && (
-          <p className="rounded-xl border border-red-400/30 bg-red-400/[0.06] px-4 py-3 text-sm text-red-200">{t.errors[apiError]}</p>
+          <p className="rounded-xl border border-danger/30 bg-danger/[0.06] px-4 py-3 text-sm text-danger">{t.errors[apiError]}</p>
         )}
       </div>
     </form>
@@ -311,7 +311,7 @@ function Field({
       </label>
       {children}
       {error && (
-        <p id={`${id}-error`} className="mt-1.5 text-xs text-red-300">
+        <p id={`${id}-error`} className="mt-1.5 text-xs text-danger">
           {error}
         </p>
       )}
@@ -348,7 +348,7 @@ function ChoiceGroup({
           <label
             key={option.value}
             className={`relative cursor-pointer select-none rounded-full border px-3.5 py-2 text-sm transition-colors has-[:checked]:border-accent/70 has-[:checked]:bg-accent/10 has-[:checked]:text-fg has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${
-              error ? "border-red-400/50 text-muted" : "border-line text-muted hover:border-line-strong hover:text-fg"
+              error ? "border-danger/50 text-muted" : "border-line text-muted hover:border-line-strong hover:text-fg"
             }`}
           >
             <input
@@ -364,7 +364,7 @@ function ChoiceGroup({
         ))}
       </div>
       {error && (
-        <p id={errorId} className="mt-2 text-xs text-red-300">
+        <p id={errorId} className="mt-2 text-xs text-danger">
           {error}
         </p>
       )}

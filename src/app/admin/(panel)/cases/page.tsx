@@ -71,13 +71,14 @@ export default async function CasesPage({ searchParams }: PageProps) {
                   <h2 className="truncate font-medium text-fg">{record.en.name}</h2>
                   <span className="rounded-full border border-line px-2 py-0.5 text-[0.7rem] text-muted">{kindLabels[record.kind]}</span>
                   {!record.published && <span className="rounded-full border border-line px-2 py-0.5 text-[0.7rem] text-subtle">Скрыт</span>}
+                  {record.featured && <span className="rounded-full border border-accent/40 px-2 py-0.5 text-[0.7rem] text-accent">На главной</span>}
                   {!record.uk.name && <span className="rounded-full border border-amber-300/40 px-2 py-0.5 text-[0.7rem] text-amber-200">Нет перевода UA</span>}
                 </div>
                 <p className="mt-1 truncate text-sm text-subtle">
                   /work/{record.slug} · {record.en.type}
                 </p>
               </div>
-              <CaseRowActions id={record.id} slug={record.slug} published={record.published} isFirst={index === 0} isLast={index === records.length - 1} />
+              <CaseRowActions id={record.id} slug={record.slug} published={record.published} featured={record.featured ?? false} isFirst={index === 0} isLast={index === records.length - 1} />
             </li>
           ))}
         </ul>

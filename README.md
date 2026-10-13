@@ -105,7 +105,7 @@ Password-protected panel (one shared password, `ADMIN_PASSWORD`) with:
 
 - **Overview** — page views, unique visitors, leads and conversion for 7/30/90 days; top pages, sources, countries, devices, site language. Cookieless analytics: no cookie banner needed, no personal data stored.
 - **Leads** — every form submission, with status (new / in progress / closed / spam), private notes, mail / phone / WhatsApp links.
-- **Cases** — add, edit, hide, reorder and delete case studies in EN and UA, upload cover and screenshots. Changes go live immediately.
+- **Cases** — add, edit, hide, reorder and delete case studies in EN and UA, upload cover and screenshots. Mark any number of cases **«На главной»** to show them in the home page's *Selected work* block (the first one with a cover also appears in the hero phone mockup); with none marked, the first three public cases are shown. Changes go live immediately.
 
 ### Setup on Vercel (once)
 
@@ -147,6 +147,10 @@ In `src/content/cases.ts`, add an entry to both `casesEn` and `casesUk`:
 The page `/en/work/client-project`, the sitemap entry and the card on the home page are created automatically. Remove the concept entries when they are no longer needed.
 
 ---
+
+## Themes
+
+The public site has a light and a dark theme. By default it follows the visitor's system setting; the sun/moon button in the header stores an explicit choice (`localStorage`, key `keel-theme`). Colours are CSS variables in `src/app/globals.css` (dark values in `@theme`, light values under `html[data-site]`). The admin panel always stays dark.
 
 ## Content & languages
 

@@ -23,6 +23,8 @@ export const casePreviews = ["board", "chart", "chat"] as const;
 
 export type CaseStudy = {
   slug: string;
+  /** Picked for the home page in the admin panel. */
+  featured?: boolean;
   kind: CaseKind;
   name: string;
   type: string;
@@ -50,6 +52,8 @@ export type CaseText = Pick<CaseStudy, "name" | "type" | "summary" | "outcome" |
 export type CaseRecord = Pick<CaseStudy, "slug" | "kind" | "preview" | "stack" | "cover" | "gallery" | "link"> & {
   id: string;
   published: boolean;
+  /** Shown in the "Selected work" block on the home page (and its hero mockups). */
+  featured?: boolean;
   order: number;
   updatedAt?: string;
 } & Record<Locale, CaseText>;
@@ -58,6 +62,7 @@ export function recordToCase(record: CaseRecord, locale: Locale): CaseStudy {
   const text = record[locale]?.name ? record[locale] : record.en;
   return {
     slug: record.slug,
+    featured: record.featured ?? false,
     kind: record.kind,
     preview: record.preview,
     stack: record.stack,

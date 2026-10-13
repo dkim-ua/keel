@@ -59,6 +59,45 @@ export const en = {
     visualLabel: "Abstract diagram of a product system: client apps, API, services, data, AI and integrations.",
   },
 
+  theme: { light: "Switch to light theme", dark: "Switch to dark theme" },
+  home: {
+    badge: "Taking new projects",
+    heroSubtitle:
+      "We design, build and launch web platforms, mobile apps and AI tools — and own the result from the first call to release.",
+    heroSecondary: "See our work",
+    heroChipTitle: "Release shipped",
+    heroChipText: "iOS · Android · Web",
+    capabilities: ["Web & SaaS", "Mobile apps", "AI solutions", "Automation"],
+    marqueeLabel: "Technologies we work with",
+    work: {
+      eyebrow: "Selected work",
+      title: "Products we’ve designed, built and shipped.",
+      all: "All work",
+      view: "View case",
+      swipe: "Swipe",
+    },
+    services: { eyebrow: "What we build", title: "Six directions. One team that owns the result." },
+    process: {
+      eyebrow: "How we work",
+      title: "From idea to production in four clear steps.",
+      text: "You always know what’s happening, what’s next and what it costs. One project lead answers for scope, timeline and quality.",
+      steps: [
+        { title: "Discovery", text: "Goals, users and requirements — what success means for you." },
+        { title: "Plan & estimate", text: "Scope, architecture, timeline and budget, agreed in writing." },
+        { title: "Build & test", text: "Short cycles with regular demos and QA on every release." },
+        { title: "Launch & grow", text: "Release, support and the next version of the product." },
+      ],
+    },
+    why: {
+      eyebrow: "Why Keel",
+      title: "Not outstaffing. A partner that answers for the product.",
+      items: [
+        { title: "One point of responsibility", text: "No juggling freelancers and vendors. One contact, one team, one result." },
+        { title: "A team built around your product", text: "The specialists your project actually needs — and the team grows with it." },
+        { title: "With you after launch", text: "Support, new features and growth — in English or Ukrainian, anywhere in the world." },
+      ],
+    },
+  },
   value: {
     eyebrow: "The model",
     title: "You bring the problem. We build the solution.",
@@ -379,6 +418,9 @@ export const en = {
     stack: "Technologies",
     visit: "Visit product",
     gallery: "Screenshots",
+    close: "Close",
+    prev: "Previous",
+    next: "Next",
     focus: "Concept focus",
     cta: "Building something similar?",
     ctaText: "Tell us about your product and we'll outline how we'd approach it.",

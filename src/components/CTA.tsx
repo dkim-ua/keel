@@ -21,7 +21,7 @@ export function CTA({ locale, t, form, title, text, defaultProjectType, id = "co
     <section id={id} aria-labelledby={`${id}-title`} className="relative isolate overflow-clip border-t border-line py-24 sm:py-32">
       <div
         aria-hidden="true"
-        className="absolute bottom-[-20rem] left-[-10rem] -z-10 h-[40rem] w-[50rem] rounded-full bg-[radial-gradient(closest-side,rgba(92,132,220,0.16),transparent)]"
+        className="absolute bottom-[-20rem] left-[-10rem] -z-10 h-[40rem] w-[50rem] rounded-full bg-[radial-gradient(closest-side,var(--color-glow),transparent)]"
       />
       <div className="container-x grid gap-14 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <div className="lg:sticky lg:top-32 lg:self-start" data-reveal>

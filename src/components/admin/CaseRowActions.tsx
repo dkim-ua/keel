@@ -2,11 +2,25 @@
 
 import Link from "next/link";
 import { useTransition } from "react";
-import { deleteCaseAction, moveCaseAction, togglePublishedAction } from "@/app/admin/actions";
+import { deleteCaseAction, moveCaseAction, toggleFeaturedAction, togglePublishedAction } from "@/app/admin/actions";
 
 const btn = "rounded-lg border border-line px-2.5 py-1.5 text-xs text-muted transition-colors hover:border-line-strong hover:text-fg disabled:opacity-40";
 
-export function CaseRowActions({ id, slug, published, isFirst, isLast }: { id: string; slug: string; published: boolean; isFirst: boolean; isLast: boolean }) {
+export function CaseRowActions({
+  id,
+  slug,
+  published,
+  featured,
+  isFirst,
+  isLast,
+}: {
+  id: string;
+  slug: string;
+  published: boolean;
+  featured: boolean;
+  isFirst: boolean;
+  isLast: boolean;
+}) {
   const [pending, start] = useTransition();
 
   return (
@@ -19,6 +33,15 @@ export function CaseRowActions({ id, slug, published, isFirst, isLast }: { id: s
       </button>
       <button type="button" className={btn} disabled={pending} onClick={() => start(() => togglePublishedAction(id))}>
         {published ? "Скрыть" : "Показать"}
+      </button>
+      <button
+        type="button"
+        className={`${btn} ${featured ? "border-accent/50 text-accent" : ""}`}
+        disabled={pending}
+        aria-pressed={featured}
+        onClick={() => start(() => toggleFeaturedAction(id))}
+      >
+        {featured ? "★ На главной" : "☆ На главную"}
       </button>
       <a href={`/en/work/${slug}`} target="_blank" className={btn}>
         Открыть ↗

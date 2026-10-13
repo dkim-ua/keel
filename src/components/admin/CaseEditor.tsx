@@ -25,6 +25,7 @@ export type CaseEditorValues = {
   kind: CaseKind;
   preview: string;
   published: boolean;
+  featured: boolean;
   link: string;
   stack: string;
   cover: string;
@@ -78,6 +79,15 @@ export function CaseEditor({ initial, uploadsEnabled }: { initial: CaseEditorVal
         <label className="mt-5 flex items-center gap-3 text-sm text-fg">
           <input type="checkbox" name="published" defaultChecked={initial.published} className="size-4 accent-[#8fb4ff]" />
           Показывать на сайте
+        </label>
+        <label className="mt-3 flex items-start gap-3 text-sm text-fg">
+          <input type="checkbox" name="featured" defaultChecked={initial.featured} className="mt-0.5 size-4 accent-[#8fb4ff]" />
+          <span>
+            На главной странице
+            <span className="mt-0.5 block text-xs text-subtle">
+              Кейс попадёт в блок «Избранные работы» на главной, а его обложка — в мокап на первом экране. Можно отметить несколько.
+            </span>
+          </span>
         </label>
         {kind === "client" && (
           <p className="mt-4 rounded-xl border border-amber-300/30 bg-amber-300/[0.06] p-3 text-xs leading-relaxed text-amber-100">

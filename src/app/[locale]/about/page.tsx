@@ -95,7 +95,7 @@ export default async function AboutPage({ params }: PageProps) {
           <div className="card relative overflow-hidden p-8 sm:p-14" data-reveal>
             <div
               aria-hidden="true"
-              className="absolute right-[-10rem] top-[-10rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(closest-side,rgba(143,180,255,0.12),transparent)]"
+              className="absolute right-[-10rem] top-[-10rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(closest-side,var(--color-glow),transparent)]"
             />
             <h2 id="partner-title" className="text-h2 relative max-w-3xl font-semibold">
               {s.partner.title}

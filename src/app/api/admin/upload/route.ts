@@ -29,5 +29,6 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[upload]", error);
     const detail = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ error: `Не удалось загрузить файл: ${detail}` }, { status: 502 });  }
+    return NextResponse.json({ error: `Не удалось загрузить файл: ${detail}` }, { status: 502 });
+  }
 }

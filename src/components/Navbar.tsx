@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import type { Dictionary } from "@/content/dictionaries";
 import { localePath, type Locale } from "@/lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 import { buttonClasses } from "./ui/Button";
 import { Logo } from "./ui/Logo";
 
-type NavbarProps = { locale: Locale; t: Dictionary["nav"] };
+type NavbarProps = { locale: Locale; t: Dictionary["nav"]; theme: Dictionary["theme"] };
 
-export function Navbar({ locale, t }: NavbarProps) {
+export function Navbar({ locale, t, theme }: NavbarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -84,8 +85,9 @@ export function Navbar({ locale, t }: NavbarProps) {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <LanguageSwitcher locale={locale} label={t.language} className="max-sm:hidden" />
+          <ThemeToggle labels={theme} />
           <Link href={localePath(locale, "/contact")} className={buttonClasses("primary", "md", "max-sm:hidden")}>
             {t.cta}
           </Link>

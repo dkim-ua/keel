@@ -37,14 +37,14 @@ export function CaseCard({ locale, t, item }: { locale: Locale; t: Dictionary["c
   return (
     <article className="card group flex h-full flex-col overflow-hidden">
       {item.cover ? (
-        <div className="relative h-40 overflow-hidden border-b border-line bg-bg">
+        <div className="relative flex h-56 items-end justify-center overflow-hidden border-b border-line bg-[linear-gradient(160deg,color-mix(in_oklab,var(--color-accent)_14%,var(--color-bg)),var(--color-bg))]">
           {/* eslint-disable-next-line @next/next/no-img-element -- uploaded images are already resized to WebP */}
           <img
             src={item.cover}
             alt=""
             loading="lazy"
             decoding="async"
-            className="size-full object-cover object-top opacity-90 transition-transform duration-700 ease-out-soft group-hover:scale-[1.03]"
+            className="h-[86%] max-w-[86%] rounded-t-xl border border-b-0 border-line object-cover object-top shadow-[0_20px_40px_-20px_var(--color-shadow)] transition-transform duration-700 ease-out-soft group-hover:-translate-y-1.5 group-hover:scale-[1.03]"
           />
         </div>
       ) : (

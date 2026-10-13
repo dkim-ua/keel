@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CaseGallery } from "@/components/CaseGallery";
 import { CTA } from "@/components/CTA";
 import { PageHeader } from "@/components/PageHeader";
 import { CheckIcon } from "@/components/ui/Icons";
@@ -79,16 +80,11 @@ export default async function CasePage({ params }: PageProps) {
       </PageHeader>
 
       {(item.cover || (item.gallery?.length ?? 0) > 0) && (
-        <section aria-label={c.gallery} className="pb-4">
-          <div className="container-x space-y-4">
-            {[item.cover, ...(item.gallery ?? [])].filter(Boolean).map((src, i) => (
-              <figure key={`${src}-${i}`} className="overflow-hidden rounded-2xl border border-line bg-surface" data-reveal>
-                {/* eslint-disable-next-line @next/next/no-img-element -- uploaded images are already resized to WebP */}
-                <img src={src} alt={`${item.name} — ${i + 1}`} loading={i === 0 ? "eager" : "lazy"} decoding="async" className="w-full" />
-              </figure>
-            ))}
-          </div>
-        </section>
+        <CaseGallery
+          images={[item.cover, ...(item.gallery ?? [])].filter((src): src is string => Boolean(src))}
+          name={item.name}
+          labels={{ gallery: c.gallery, close: c.close, prev: c.prev, next: c.next }}
+        />
       )}
 
       <section aria-label={item.name} className="border-t border-line py-20 sm:py-24">
